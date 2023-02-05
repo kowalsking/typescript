@@ -1,15 +1,17 @@
-interface IRequest {
+interface IPayment {
   sum: number;
   from: 2;
   to: number;
 }
 
-enum Status {
+interface IPaymentRequest extends IPayment {}
+
+enum PaymentStatus {
   SUCCESS = 'success',
   FAILED = 'failed'
 }
 
-interface ISuccessData extends IRequest {
+interface ISuccessData extends IPayment {
   databaseId: number;
 }
 
@@ -20,6 +22,6 @@ interface IFailedData {
 
 type IResponseData = IFailedData | ISuccessData
 interface IResponse {
-  status: Status;
+  status: PaymentStatus;
   data: IResponseData
 }
