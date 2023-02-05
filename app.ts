@@ -1,21 +1,25 @@
-type RequestType = {
-  topicId: number;
-  status?: 'published' | 'draft' | 'deleted';
+interface IRequest {
+  sum: number;
+  from: 2;
+  to: number;
 }
 
-type ResponseT = {
-  question: string;
-  answer: string;
-  tags: string[];
-  likes: number;
-  status: 'published' | 'draft' | 'deleted'
-}[]
+enum Status {
+  SUCCESS = 'success',
+  FAILED = 'failed'
+}
 
-async function getFaqs(req: RequestType): Promise<ResponseT> {
-  const res = await fetch('/faqs', {
-    method: 'POST',
-    body: JSON.stringify(req)
-  });
-  const data: ResponseT = await res.json();
-  return data;
+interface ISuccessData extends IRequest {
+  databaseId: number;
+}
+
+interface IFailedData {
+  errorMessage: string;
+  errorCode: number;
+}
+
+type IResponseData = IFailedData | ISuccessData
+interface IResponse {
+  status: Status;
+  data: IResponseData
 }
