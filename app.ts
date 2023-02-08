@@ -1,6 +1,15 @@
-type Success = any;
-type DataS = any;
+interface User {
+  name: string;
+}
 
-function isSuccess(res: any): res is Success {
-  return res.status === PaymentStatus.Success;
+const a = {}
+
+assertUser(a)
+a.name = 'Anton'
+
+function assertUser(obj: unknown): asserts obj is User {
+  if (typeof obj === 'object' && !!obj && 'name' in obj) {
+    return
+  }
+  throw new Error('a')
 }
