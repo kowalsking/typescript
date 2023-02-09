@@ -1,15 +1,26 @@
-interface User {
-  name: string;
+enum PaymentStatus {
+  Holded,
+  Processed,
+  Reversed
 }
 
-const a = {}
+class Payment {
+  id: number;
+  status: PaymentStatus;
+  createdAt: Date;
+  updatedAt!: Date;
 
-assertUser(a)
-a.name = 'Anton'
 
-function assertUser(obj: unknown): asserts obj is User {
-  if (typeof obj === 'object' && !!obj && 'name' in obj) {
-    return
+  constructor(id: number) {
+    this.id = id;
+    this.createdAt = new Date();
+    this.status = PaymentStatus.Holded;
   }
-  throw new Error('a')
+
+  getPaymentLifeTime(): number {
+    return new Date().getTime() - this.createdAt.getTime();
+  }
 }
+
+const payment = new Payment(1);
+const time = payment.getPaymentLifeTime();
