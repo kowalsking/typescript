@@ -1,15 +1,14 @@
 class User {
-  skills!: string[];
+  _login!: string;
+  password!: string;
 
-  addSkill(skills: string[]): void
-  addSkill(skills: string): void
-  addSkill(skills: string | string[]): void {
-    if (Array.isArray(skills)) {
-      this.skills.concat(skills);
-    } else {
-      this.skills.push(skills);
-    }
+  set login(l: string) {
+    this._login = l;
+  }
+
+  get login() {
+    return this._login;
   }
 }
 
-new User().addSkill([]);
+const user = new User();
