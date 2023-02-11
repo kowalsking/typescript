@@ -1,19 +1,56 @@
-class User {
-  name: string;
+class Product {
+  constructor(public id: number, public title: string, public price: number) {}
+}
 
-  constructor(name: string) {
-    this.name = name;
+class Delivery {
+  constructor(public date: Date) {}
+}
+
+class HomeDelivery extends Delivery {
+  constructor(public date: Date, public address: string) {
+    super(date);
+  }
+}
+class ShopDelivery extends Delivery {
+  constructor(public shopId: number) {
+    super(new Date());
   }
 }
 
-class Users extends Array<User> {
-  searchByName(name: string) {
-    return this.filter(u => u.name === name);
+type DeliveryOptions = HomeDelivery | ShopDelivery;
+
+class Card {
+  private products: Product[] = [];
+  private delivery!: DeliveryOptions;
+
+  public addProduct(product: Product): void {
+    this.products.push(product);
   }
 
-  override toString(): string {
-    return this.map(u => u.name).join(', ')
+  public deleteProduct(productId: number): void {
+    this.products = this.products.filter((p: Product) => p.id !== productId);
+  }
+
+  public getSum(): number {
+    return this.products
+      .map((p: Product) => p.price)
+      .reduce((p1: number, p2: number) => p1 + p2);
+  }
+
+  public setDelivery(delivery: DeliveryOptions): void {
+    this.delivery = delivery;
+  }
+
+  public checkout() {
+    if (this.products.length === 0) {
+      throw new Error("No products");
+    }
+    if (!this.delivery) {
+      throw new Error("No delivery type");
+    }
+
+    return {
+      success: true,
+    };
   }
 }
-
-const users = new Users()
