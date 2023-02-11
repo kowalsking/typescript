@@ -1,25 +1,19 @@
-type PaymentStatus = "new" | "paid";
+class User {
+  name: string;
 
-class Payment {
-  id!: number;
-  status: PaymentStatus = "new";
-
-  constructor(id: number) {
-    this.id = id;
-  }
-
-  pay() {
-    this.status = 'paid';
+  constructor(name: string) {
+    this.name = name;
   }
 }
 
-class PersistentPayment extends Payment {
-  databaseId!: number;
-  paidAt!: Date;
+class Users extends Array<User> {
+  searchByName(name: string) {
+    return this.filter(u => u.name === name);
+  }
 
-  constructor() {
-    const id = Math.random();
-    super(id); 
+  override toString(): string {
+    return this.map(u => u.name).join(', ')
   }
 }
 
+const users = new Users()
