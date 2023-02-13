@@ -1,15 +1,17 @@
 "use strict";
-class Controller {
-    handleWithLogs(req) {
-        console.log('Start');
-        this.handle(req);
-        console.log('End');
+class Logger {
+    printDate() {
+        this.log(new Date().getDate());
     }
 }
-class UserController extends Controller {
-    handle(req) {
-        console.log(req);
+class TrueLogger extends Logger {
+    log(message) {
+        console.log(message);
+    }
+    logWithDate() {
+        this.printDate();
+        this.log('Hello world!');
     }
 }
-const c = new UserController();
-c.handleWithLogs('haha');
+const tl = new TrueLogger();
+tl.logWithDate();
