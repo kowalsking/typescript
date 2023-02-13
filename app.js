@@ -1,29 +1,15 @@
 "use strict";
-var PaymentStatus;
-(function (PaymentStatus) {
-    PaymentStatus[PaymentStatus["Hold"] = 0] = "Hold";
-    PaymentStatus[PaymentStatus["Processed"] = 1] = "Processed";
-    PaymentStatus[PaymentStatus["Reversed"] = 2] = "Reversed";
-})(PaymentStatus || (PaymentStatus = {}));
-class Payment {
-    constructor(id) {
-        this.id = id;
-        this.createdAt = new Date();
-        this.status = PaymentStatus.Hold;
-    }
-    getPaymentLifeTime() {
-        return new Date().getTime() - this.createdAt.getTime();
-    }
-    unholdPayment() {
-        if (this.status === PaymentStatus.Processed) {
-            throw new Error('Payment cant be returned');
-        }
-        this.status = PaymentStatus.Reversed;
-        this.updatedAt = new Date();
+class Controller {
+    handleWithLogs(req) {
+        console.log('Start');
+        this.handle(req);
+        console.log('End');
     }
 }
-const payment = new Payment(1);
-payment.unholdPayment();
-console.log(payment);
-const time = payment.getPaymentLifeTime();
-console.log(time);
+class UserController extends Controller {
+    handle(req) {
+        console.log(req);
+    }
+}
+const c = new UserController();
+c.handleWithLogs('haha');
