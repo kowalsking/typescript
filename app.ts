@@ -1,11 +1,20 @@
-function logMiddleware<T>(data: T): T {
-  console.log(data)
-  return data
-}
+function toString<T>(data: T): string | undefined {
+  if (Array.isArray(data)) {
+    return data.toString()
+  }
 
-const res = logMiddleware<number>(10)
-
-function getSplitedHalf<T>(data: T[]): Array<T> {
-  const l = data.length / 2
-  return data.splice(0, l)
+  switch (typeof data) {
+    case 'string':
+      return data;
+    case 'number':
+    case 'symbol':
+    case 'bigint':
+    case 'boolean':
+    case 'function':
+      return data.toString()
+    case 'object':
+      return JSON.stringify(data);
+    default:
+      return undefined
+  }
 }
