@@ -1,17 +1,14 @@
 "use strict";
-class Logger {
-    printDate() {
-        this.log(new Date().getDate());
+const data = [
+    { id: 1, name: 'One' },
+    { id: 3, name: 'Two' },
+    { id: 2, name: 'Three' },
+];
+function filterArr(arr, to = 'up') {
+    if (to === 'up') {
+        return arr.sort((a, b) => a.id - b.id);
     }
+    return arr.sort((a, b) => b.id - a.id);
 }
-class TrueLogger extends Logger {
-    log(message) {
-        console.log(message);
-    }
-    logWithDate() {
-        this.printDate();
-        this.log('Hello world!');
-    }
-}
-const tl = new TrueLogger();
-tl.logWithDate();
+console.log(filterArr(data, 'up'));
+console.log(filterArr(data, 'down'));
