@@ -1,15 +1,36 @@
-const data = [
-  { id: 1, name: 'One' },
-  { id: 3, name: 'Two' },
-  { id: 2, name: 'Three' },
-]
+type Constructor = new (...args: any) => {}
+type GConstructor<T = {}> = new (...args: any) => T
 
-function sort<T extends { id: number }>(arr: T[], to: 'up' | 'down' = 'up'): T[] {
-  if (to === 'up') {
-    return arr.sort((a, b) => a.id - b.id)
-  }
-  return arr.sort((a, b) => b.id - a.id)
+class List {
+  constructor(public items: string[]) {}
 }
 
-console.log(sort(data, 'up'))
-console.log(sort(data, 'down'))
+class Accordion {
+  isOpened!: boolean
+}
+
+type ListType = п<List>
+type AccordionType = GConstructor<Accordion>
+
+class ExtendedListClass extends List {
+  first() {
+    return this.items[0]
+  }
+}
+
+function ExtendedList<TBase extends ListType & AccordionType>(Base: TBase) {
+  return class ExtendedList extends Base {
+    first() {
+      return this.items[0]
+    }
+  }
+}
+
+class AccordionList {
+  isOpened!: boolean
+  constructor(public items: string[]) {}
+}
+
+const list = ExtendedList(AccordionList)
+const result = new list(['1', '2'])
+console.log(result)
