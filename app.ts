@@ -1,35 +1,51 @@
-interface Role {
-  name: string
+const a: number = Math.random() > 0.5 ? 1 : 0
+
+interface HTTPResponse<T extends 'success' | 'failed'> {
+  code: number
+  data: T extends 'success' ? string : Error
+  additionalData?: T extends 'failed' ? string : number
 }
 
-
-interface Permission {
-  endDate: Date
+const error: HTTPResponse<'failed'> = {
+  code: 500,
+  data: new Error(),
 }
 
-interface User {
-  name: string
-  roles: Role[]
-  permission: Permission
+const success: HTTPResponse<'success'> = {
+  code: 500,
+  data: 'done',
 }
 
-const user: User = {
-  name: 'John',
-  roles: [],
-  permission: {
-    endDate: new Date()
+class User {
+  id!: number
+  name!: string
+}
+
+class UserPersistent extends User {
+  dbId!: string
+}
+
+function getUser(id: number): User
+function getUser(dbId: string): UserPersistent
+function getUser(dbUdOrId: string | number): User | UserPersistent {
+  if (typeof dbUdOrId === 'number') {
+    return new User()
+  } else {
+    return new UserPersistent()
   }
 }
 
-const nameUser = user['name']
-const roleName = 'roles'
+type UserOrUserPersistent<T extends string | number> = T extends number
+  ? User
+  : UserPersistent
 
-type rolesType = User['roles']
-type rolesType1 = User[typeof roleName]
+function getUser2<T extends string | number>(id: T): UserOrUserPersistent<T> {
+  if (typeof id === 'number') {
+    return new User() as UserOrUserPersistent<T>
+  } else {
+    return new UserPersistent()
+  }
+}
 
-type roleType = User['roles'][number] // Отримати елемент масиву.
-type dateType = User['permission']['endDate'] // Отримати елемент масиву.
-
-const roles = ['admin', 'user', 'superuser'] as const //  roles: readonly ["admin", "user", "superuser"]
-
-type typeRoles = typeof roles[number] //  roles: readonly ["admin", "user", "superuser"]
+const res = getUser2(1)
+const res2 = getUser2('1')
