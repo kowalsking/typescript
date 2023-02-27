@@ -6,26 +6,33 @@ interface IUserService {
 class UserService implements IUserService {
   users: number = 1000
 
-  @Log
+  @Catch(true)
   getUsersInDatabase(): number {
     throw new Error('Errrr')
   }
 }
 
-function Log(
-  target: Object,
-  propertyKey: string | symbol,
-  descriptor: TypedPropertyDescriptor<(...args: any[]) => any>
-): TypedPropertyDescriptor<(...args: any[]) => any> | void {
-  console.log('target', target)
-  console.log('propertyKey', propertyKey)
-  console.log('descriptor', descriptor)
+function Catch(rethrow: boolean = false) {
+  return (
+    target: Object,
+    _: string | symbol,
+    descriptor: TypedPropertyDescriptor<(...args: any[]) => any>
+  ): TypedPropertyDescriptor<(...args: any[]) => any> | void => {
+    const method = descriptor.value
 
-  const oldValue = descriptor.value
+    descriptor.value = async (...args: any[]) => {
+      try {
+        return await method?.apply(target, args)
+      } catch (e) {
+        if (e instanceof Error) {
+          console.log(e.message)
 
-  descriptor.value = () => {
-    console.log('Gaga')
-    if(oldValue) oldValue()
+          if (rethrow) {
+            throw e
+          }
+        }
+      }
+    }
   }
 }
 
