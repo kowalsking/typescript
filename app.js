@@ -5,10 +5,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-// @nullUser
-let UserService = 
-// @threeUserAdvanced
-class UserService {
+let UserService = class UserService {
     constructor() {
         this.users = 1000;
     }
@@ -17,42 +14,14 @@ class UserService {
     }
 };
 UserService = __decorate([
-    setUsers(122),
-    log()
-    // @threeUserAdvanced
+    CreatedAt
 ], UserService);
-function nullUser(target) {
-    target.prototype.users = 0;
-}
-function setUsers(users) {
-    console.log('setUsers init'); // 1
-    return (target) => {
-        console.log('setUsers run'); // 4
-        target.prototype.users = users;
-    };
-}
-function log() {
-    console.log('log init'); // 2
-    return (target) => {
-        console.log('log run'); // 3
-    };
-}
-function setUsersAdvanced(users) {
-    return (constructor) => {
-        return class extends constructor {
-            constructor() {
-                super(...arguments);
-                this.users = users;
-            }
-        };
-    };
-}
-function threeUserAdvanced(constructor) {
+function CreatedAt(constructor) {
     return class extends constructor {
         constructor() {
             super(...arguments);
-            this.users = 3;
+            this.createdAt = new Date();
         }
     };
 }
-console.log(new UserService().getUsersInDatabase());
+console.log(new UserService().createdAt);
