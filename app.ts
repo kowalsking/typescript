@@ -37,3 +37,4 @@ function Catch(rethrow: boolean = false) {
 }
 
 console.log(new UserService().getUsersInDatabase())
+4
