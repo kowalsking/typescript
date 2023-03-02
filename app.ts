@@ -4,36 +4,34 @@ interface IUserService {
 }
 
 class UserService implements IUserService {
-  @Max(100)
-  users: number = 1000
+  private _users!: number
 
-  @Catch(true)
+  set users(number) {
+    this._users = number
+  }
+
+  @Log()
+  get users() {
+    return this._users
+  }
+
   getUsersInDatabase(): number {
     throw new Error('Errrr')
   }
 }
 
-function Max(max: number) {
+function Log() {
   return (
     target: Object,
     propertyKey: string | symbol,
+    descriptor: PropertyDescriptor
   ) => {
-    let value: number;
-    const setter = function (newValue: number) {
-      if (newValue > max) {
-        console.log('Over limit!', max)
-      } else {
-        value = newValue
-      }
+    const set = descriptor.set;
+    descriptor.set = (...args: any[]) => {
+      console.log(args);
+      // @ts-ignore
+      set?.apply(target, args);
     }
-    const getter = function () {
-      return value
-    }
-
-    Object.defineProperty(target, propertyKey, {
-      set: setter,
-      get: getter
-    })
   }
 }
 
@@ -63,6 +61,4 @@ function Catch(rethrow: boolean = false) {
 
 const us = new UserService()
 us.users = 1
-console.log(us.users)
-us.users = 1000
 console.log(us.users)

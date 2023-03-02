@@ -16,36 +16,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 class UserService {
     constructor() {
-        this.users = 1000;
+        this._users = 1000;
+    }
+    set users(number) {
+        this._users = number;
+    }
+    get users() {
+        return this._users;
     }
     getUsersInDatabase() {
         throw new Error('Errrr');
     }
 }
 __decorate([
-    Max(100)
-], UserService.prototype, "users", void 0);
-__decorate([
-    Catch(true)
-], UserService.prototype, "getUsersInDatabase", null);
-function Max(max) {
-    return (target, propertyKey) => {
-        let value;
-        const setter = function (newValue) {
-            if (newValue > max) {
-                console.log('Over limit!', max);
-            }
-            else {
-                value = newValue;
-            }
+    Log()
+], UserService.prototype, "users", null);
+function Log() {
+    return (target, propertyKey, descriptor) => {
+        const set = descriptor.set;
+        descriptor.set = (...args) => {
+            console.log(args);
+            // @ts-ignore
+            set === null || set === void 0 ? void 0 : set.apply(target, args);
         };
-        const getter = function () {
-            return value;
-        };
-        Object.defineProperty(target, propertyKey, {
-            set: setter,
-            get: getter
-        });
     };
 }
 function Catch(rethrow = false) {
@@ -68,6 +61,4 @@ function Catch(rethrow = false) {
 }
 const us = new UserService();
 us.users = 1;
-console.log(us.users);
-us.users = 1000;
 console.log(us.users);
