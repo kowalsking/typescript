@@ -5,60 +5,56 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+require("reflect-metadata");
+const POSITIVE_METADATA_KEY = Symbol('POSITIVE_METADATA_KEY');
 class UserService {
-    constructor() {
-        this._users = 1000;
-    }
-    set users(number) {
-        this._users = number;
-    }
-    get users() {
+    getUsersInDatabase() {
         return this._users;
     }
-    getUsersInDatabase() {
-        throw new Error('Errrr');
+    setUsersInDatabase(num) {
+        this._users = num;
     }
 }
 __decorate([
-    Log()
-], UserService.prototype, "users", null);
-function Log() {
-    return (target, propertyKey, descriptor) => {
-        const set = descriptor.set;
-        descriptor.set = (...args) => {
-            console.log(args);
-            // @ts-ignore
-            set === null || set === void 0 ? void 0 : set.apply(target, args);
-        };
+    Validate(),
+    __param(0, Positive()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], UserService.prototype, "setUsersInDatabase", null);
+function Positive() {
+    return (target, propertyKey, parameterIndex) => {
+        console.log(Reflect.getOwnMetadata('design:type', target, propertyKey));
+        console.log(Reflect.getOwnMetadata('design:paramtypes', target, propertyKey));
+        console.log(Reflect.getOwnMetadata('design:returntype', target, propertyKey));
+        let existParams = Reflect.getOwnMetadata(POSITIVE_METADATA_KEY, target, propertyKey) || [];
+        existParams.push(parameterIndex);
+        Reflect.defineMetadata(POSITIVE_METADATA_KEY, existParams, target, propertyKey);
     };
 }
-function Catch(rethrow = false) {
-    return (target, _, descriptor) => {
-        const method = descriptor.value;
-        descriptor.value = (...args) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                return yield (method === null || method === void 0 ? void 0 : method.apply(target, args));
-            }
-            catch (e) {
-                if (e instanceof Error) {
-                    console.log(e.message);
-                    if (rethrow) {
-                        throw e;
+function Validate() {
+    return (target, propertyKey, descriptor) => {
+        let method = descriptor.value;
+        descriptor.value = function (...args) {
+            let positiveParams = Reflect.getOwnMetadata(POSITIVE_METADATA_KEY, target, propertyKey);
+            if (positiveParams) {
+                for (let index of positiveParams) {
+                    if (args[index] < 0) {
+                        throw new Error('Should be greater than 0');
                     }
                 }
             }
-        });
+            return method === null || method === void 0 ? void 0 : method.apply(this, args);
+        };
     };
 }
 const us = new UserService();
-us.users = 1;
-console.log(us.users);
+console.log(us.setUsersInDatabase(10));
+console.log(us.setUsersInDatabase(-1));
