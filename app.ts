@@ -1,64 +1,44 @@
-import 'reflect-metadata'
-
-const POSITIVE_METADATA_KEY = Symbol('POSITIVE_METADATA_KEY')
-
-interface IUserService {
-  getUsersInDatabase(): number
-}
-
-class UserService implements IUserService {
-  private _users!: number
-
-  getUsersInDatabase(): number {
-    return this._users
-  }
-
-  @Validate()
-  setUsersInDatabase(@Positive() num: number): void {
-    this._users = num
+function Uni(name: string): any {
+  console.log('Initialization: ' + name)
+  return function() {
+    console.log('Invoke: ' + name)
   }
 }
 
-function Positive() {
-  return (
-    target: Object,
-    propertyKey: string | symbol,
-    parameterIndex: number
-  ) => {
-    console.log(Reflect.getOwnMetadata('design:type', target, propertyKey))
-    console.log(Reflect.getOwnMetadata('design:paramtypes', target, propertyKey))
-    console.log(Reflect.getOwnMetadata('design:returntype', target, propertyKey))
+@Uni('Class')
+class C {
+  @Uni('Property')
+  props!: any;
 
-    let existParams: number[] = Reflect.getOwnMetadata(POSITIVE_METADATA_KEY, target, propertyKey) || []
-    existParams.push(parameterIndex)
+  @Uni('Static Property')
+  static prop: any;
 
-    Reflect.defineMetadata(POSITIVE_METADATA_KEY, existParams, target, propertyKey)
+  @Uni('Static Method')
+  static smethod(@Uni('Static Parameter') a: any) {}
+
+  @Uni('Method')
+  method(@Uni('Parameter') a: any) {}
+  
+  constructor(@Uni('Constructor Parameter') a: any) {
+    
   }
 }
 
-function Validate() {
-  return (
-    target: Object,
-    propertyKey: string | symbol,
-    descriptor: TypedPropertyDescriptor<(...args: any[]) => any>
-  ) => {
-    let method = descriptor.value
-
-    descriptor.value = function (...args: any) {
-      let positiveParams: number[] = Reflect.getOwnMetadata(POSITIVE_METADATA_KEY, target, propertyKey)
-      if (positiveParams) {
-        for (let index of positiveParams) {
-          if (args[index] < 0) {
-            throw new Error('Should be greater than 0')
-          }
-        }
-      }
-
-      return method?.apply(this, args)
-    }
-  }
-}
-
-const us = new UserService()
-console.log(us.setUsersInDatabase(10))
-console.log(us.setUsersInDatabase(-1))
+/**
+ * Initialization: Property
+Invoke: Property
+Initialization: Method
+Initialization: Parameter
+Invoke: Parameter
+Invoke: Method
+Initialization: Static Property
+Invoke: Static Property
+Initialization: Static Method
+Initialization: Static Parameter
+Invoke: Static Parameter
+Invoke: Static Method
+Initialization: Class
+Initialization: Constructor Parameter
+Invoke: Constructor Parameter
+Invoke: Class
+ */
