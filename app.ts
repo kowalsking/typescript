@@ -6,7 +6,6 @@ class Person {
 }
 
 function sealed(target: Function): any {
-
   target = function() {
     console.log('DECORATORRR', target)
   }
